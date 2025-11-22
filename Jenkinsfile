@@ -1,42 +1,29 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_IMAGE = "springboot_demo_image"
-    }
-
     stages {
-
         stage('Checkout') {
             steps {
                 git branch: 'master', url: 'https://github.com/SUdvisha/DEMO1.git'
             }
         }
 
-        stage('Build JAR') {
+        stage('Maven Build') {
             steps {
-                bat "mvn clean package"
+                bat "mvn clean package -DskipTests"
             }
         }
 
-        stage('Docker Build') {
+        stage('Archive JAR') {
             steps {
-                bat "docker build -t %DOCKER_IMAGE%:%BUILD_NUMBER% -f Dockerfile ."
-            }
-        }
-
-        stage('Run Container') {
-            steps {
-                script {
-                    bat "docker run -d --name demo1 -p 8080:8080 %DOCKER_IMAGE%:%BUILD_NUMBER%"
-                }
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
     }
 
     post {
         success {
-            echo "🎉 Demo Spring Boot app built and deployed successfully!"
+            echo "✅ JAR build successful!"
         }
         failure {
             echo "❌ Build failed!"
