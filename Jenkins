@@ -9,7 +9,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/SUdvisha/demo1.git'
+                git branch: 'master', url: 'https://github.com/SUdvisha/DEMO1.git'
             }
         }
 
